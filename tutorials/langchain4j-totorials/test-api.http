@@ -69,8 +69,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "imageUrl": "https://dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com/1d/7f/20251206/df817e52/f42cd78f-346a-45ec-ae0c-fc1035a1ca1b3992033219.png?Expires=1765095769&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=MSepscl5Pv1%2Bd4eaJXcetSocfKg%3D",
-  "prompt": "图片中有什么？"
+  "imageUrl": "https://dashscope-result-hz.oss-cn-hangzhou.aliyuncs.com/7d/eb/20251207/31eda923/f546ac30-5076-4b23-917a-d25e8c766636-1.png?Expires=1765721870&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=%2FdUYzAW2TMCiyC83uJ2LmiZx4Mo%3D",
+  "prompt": "图片中的人手上拿着什么？"
 }
 
 ### POST 使用图像模型生成图片
