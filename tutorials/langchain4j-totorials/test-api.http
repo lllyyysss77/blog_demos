@@ -96,3 +96,23 @@ Accept: application/json
     "https://help-static-aliyun-doc.aliyuncs.com/file-manage-files/zh-CN/20250925/gborgw/input3.png"
   ]
 }
+
+
+
+### POST 低级API，通过手动添加ChatMessage到集合实现聊天记忆
+POST http://localhost:8080/api/qwen/lowlevel/addrawchatmessage
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "他有哪些主要对手？"
+}
+
+### POST 低级API，通过手动添加ChatMessage到集合实现聊天记忆
+POST http://localhost:8080/api/qwen/lowlevel/addchatmessagetochatmemory
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "他有哪些文学成就？"
+}

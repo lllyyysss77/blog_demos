@@ -53,5 +53,6 @@
     <module>hello-world</module>
     <module>demo-with-spring-boot</module>
     <module>image-tutorial</module>
+    <module>memory</module>
   </modules>
 </project>
