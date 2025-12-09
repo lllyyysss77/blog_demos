@@ -151,7 +151,7 @@ public class QwenController {
     }
 
     @PostMapping("/simulatemultiroundchat")
-    public ResponseEntity<Response> simulateMultiRoundChat(@RequestBody PromptRequest request) {
+    public ResponseEntity<Response> addRawChatMessage(@RequestBody PromptRequest request) {
         ResponseEntity<Response> checkRlt = check(request);
         if (checkRlt != null) {
             return checkRlt;

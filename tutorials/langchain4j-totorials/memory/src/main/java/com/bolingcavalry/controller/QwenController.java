@@ -76,24 +76,7 @@ public class QwenController {
     }
 
     @PostMapping("/lowlevel/addrawchatmessage")
-    public ResponseEntity<Response> lowLevelAddRawChatMessage(@RequestBody PromptRequest request) {
-        ResponseEntity<Response> checkRlt = check(request);
-        if (checkRlt != null) {
-            return checkRlt;
-        }
-
-        try {
-            // 调用QwenService获取模型响应
-            String response = qwenService.lowLevelAddRawChatMessage(request.getPrompt());
-            return ResponseEntity.ok(new Response(response));
-        } catch (Exception e) {
-            // 捕获异常并返回错误信息
-            return ResponseEntity.status(500).body(new Response("请求处理失败: " + e.getMessage()));
-        }
-    }
-
-    @PostMapping("/lowlevel/addchatmessagetochatmemory")
-    public ResponseEntity<Response> lowLevelAddChatMessageToChatMemory(@RequestBody PromptRequest request) {
+    public ResponseEntity<Response> addRawChatMessage(@RequestBody PromptRequest request) {
         ResponseEntity<Response> checkRlt = check(request);
         if (checkRlt != null) {
             return checkRlt;
@@ -102,6 +85,40 @@ public class QwenController {
         try {
             // 调用QwenService获取模型响应
             String response = qwenService.lowLevelAddChatMessageToChatMemory(request.getPrompt());
+            return ResponseEntity.ok(new Response(response));
+        } catch (Exception e) {
+            // 捕获异常并返回错误信息
+            return ResponseEntity.status(500).body(new Response("请求处理失败: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/lowlevel/addchatmessagetochatmemory")
+    public ResponseEntity<Response> addChatMessageToChatMemory(@RequestBody PromptRequest request) {
+        ResponseEntity<Response> checkRlt = check(request);
+        if (checkRlt != null) {
+            return checkRlt;
+        }
+
+        try {
+            // 调用QwenService获取模型响应
+            String response = qwenService.lowLevelAddChatMessageToChatMemory(request.getPrompt());
+            return ResponseEntity.ok(new Response(response));
+        } catch (Exception e) {
+            // 捕获异常并返回错误信息
+            return ResponseEntity.status(500).body(new Response("请求处理失败: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/lowlevel/byconversationchain")
+    public ResponseEntity<Response> byConversationChain(@RequestBody PromptRequest request) {
+        ResponseEntity<Response> checkRlt = check(request);
+        if (checkRlt != null) {
+            return checkRlt;
+        }
+
+        try {
+            // 调用QwenService获取模型响应
+            String response = qwenService.lowLevelByConversationChain(request.getPrompt());
             return ResponseEntity.ok(new Response(response));
         } catch (Exception e) {
             // 捕获异常并返回错误信息

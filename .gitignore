@@ -16,9 +16,7 @@ tutorials/object-tutorials/.history
 tutorials/leader-tutorials/.history
 tutorials/object-tutorials/.history/*
 tutorials/leader-tutorials/.history/*
-tutorials/langchain4j-totorials/hello-world/target
-tutorials/langchain4j-totorials/demo-with-spring-boot/target
 tutorials/langchain4j-totorials/.history
 disruptor-tutorials/.gradle/*
 gradlespringbootdemo/.gradle/*
-tutorials/langchain4j-totorials/image-tutorial/target/*
+tutorials/langchain4j-totorials/*/target/*

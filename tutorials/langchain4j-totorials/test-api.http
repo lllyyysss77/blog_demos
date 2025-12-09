@@ -108,11 +108,20 @@ Accept: application/json
   "prompt": "他有哪些主要对手？"
 }
 
-### POST 低级API，通过手动添加ChatMessage到集合实现聊天记忆
+### POST 低级API，把ChatMessage添加到ChatMemory实现聊天记忆
 POST http://localhost:8080/api/qwen/lowlevel/addchatmessagetochatmemory
 Content-Type: application/json
 Accept: application/json
 
 {
   "prompt": "他有哪些文学成就？"
+}
+
+### POST 低级API，通过ConversationChain实现聊天记忆
+POST http://localhost:8080/api/qwen/lowlevel/byconversationchain
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "他在与北方游牧民族的军事斗争中有哪些成就？"
 }

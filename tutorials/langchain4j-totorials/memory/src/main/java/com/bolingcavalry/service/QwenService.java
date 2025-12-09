@@ -1,5 +1,6 @@
 package com.bolingcavalry.service;
 
+import dev.langchain4j.chain.ConversationalChain;
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.memory.chat.TokenWindowChatMemory;
@@ -54,16 +55,26 @@ public class QwenService {
     }
 
     /**
+     * 创建一个ChatMemory实例，用于存储聊天记忆
+     * 
+     * @return ChatMemory实例
+     */
+    private ChatMemory createChatMemoryInstance() {
+        // 设置记忆长度是基于token的，所以这里要根据模型名称设定分词方式
+        String modelNameForToken = dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_O.toString();
+        // 可以基于最大token数量来创建，也可以基于最大消息数量来创建，方法是:MessageWindowChatMemory.withMaxMessages(100)
+        return TokenWindowChatMemory.withMaxTokens(5000, new OpenAiTokenCountEstimator(modelNameForToken));
+    }
+
+    /**
      * 低级API，手动添加ChatMessage到ChatMemory，实现聊天记忆功能
      * 
      * @param prompt 模板中的变量
      * @return 助手生成的回答
      */
     public String lowLevelAddChatMessageToChatMemory(String prompt) {
-        // 设置记忆长度是基于token的，所以这里要根据模型名称设定分词方式
-        String modelNameForToken = dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_O.toString();
-        ChatMemory chatMemory = TokenWindowChatMemory.withMaxTokens(5000,
-                new OpenAiTokenCountEstimator(modelNameForToken));
+        // 创建一个ChatMemory实例，通过token数量限制记忆长度
+        ChatMemory chatMemory = createChatMemoryInstance();
 
         // 这是第一次对话
         // 把第一次的请求添加到ChatMemory中
@@ -83,6 +94,33 @@ public class QwenService {
 
         logger.info("第二次响应：" + secondAnswer.text());
         return secondAnswer.text() + "[from lowLevelAddChatMessageToChatMemory]";
+    }
+
+    /**
+     * 低级API，使用ConversationChain来实现聊天记忆功能
+     * 
+     * @param prompt 模板中的变量
+     * @return 大模型生成的回答
+     */
+    public String lowLevelByConversationChain(String prompt) {
+        // 创建一个ChatMemory实例，通过token数量限制记忆长度
+        ChatMemory chatMemory = createChatMemoryInstance();
+
+        // 创建一个ConversationChain实例来负责多轮聊天，并且把ChatMemory实例传入用于处理聊天记忆
+        ConversationalChain chain = ConversationalChain.builder()
+                .chatModel(openAiChatModel)
+                .chatMemory(chatMemory)
+                .build();
+
+        // 通过chain进行对话，这是第一次问答
+        String firstAnswer = chain.execute("一百字介绍曹操是谁");
+        logger.info("第一次响应：" + firstAnswer);
+
+        // 通过chain进行对话，这是第二次问答
+        String secondAnswer = chain.execute(prompt);
+        logger.info("第二次响应：" + secondAnswer);
+
+        return secondAnswer + "[from lowLevelByConversationChain]";
     }
 
 }
