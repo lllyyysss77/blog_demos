@@ -34,7 +34,6 @@ public class QwenController {
      * 
      * @param qwenService QwenService实例
      */
-    @Autowired
     public QwenController(QwenService qwenService) {
         this.qwenService = qwenService;
     }
@@ -45,9 +44,7 @@ public class QwenController {
     @Data
     static class PromptRequest {
         private String prompt;
-        private int imageNum;
-        private String imageUrl;
-        private List<String> imageUrls;
+        private int userId;
     }
 
     /**
@@ -126,4 +123,37 @@ public class QwenController {
         }
     }
 
+    @PostMapping("/highlevel/global")
+    public ResponseEntity<Response> highLevelGlobal(@RequestBody PromptRequest request) {
+        ResponseEntity<Response> checkRlt = check(request);
+        if (checkRlt != null) {
+            return checkRlt;
+        }
+
+        try {
+            // 使用基于内存的全局记忆功能
+            String response = qwenService.highLevelRamGlobal(request.getPrompt());
+            return ResponseEntity.ok(new Response(response));
+        } catch (Exception e) {
+            // 捕获异常并返回错误信息
+            return ResponseEntity.status(500).body(new Response("请求处理失败: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/highlevel/byuserid")
+    public ResponseEntity<Response> highLevelByUserID(@RequestBody PromptRequest request) {
+        System.out.println("request : " + request);
+        ResponseEntity<Response> checkRlt = check(request);
+        if (checkRlt != null) {
+            return checkRlt;
+        }
+        try {
+            // 使用基于内存的用户ID记忆功能
+            String response = qwenService.highLevelRamByUserID(request.getUserId(), request.getPrompt());
+            return ResponseEntity.ok(new Response(response));
+        } catch (Exception e) {
+            // 捕获异常并返回错误信息
+            return ResponseEntity.status(500).body(new Response("请求处理失败: " + e.getMessage()));
+        }
+    }
 }

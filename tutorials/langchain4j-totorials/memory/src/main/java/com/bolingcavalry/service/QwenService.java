@@ -3,10 +3,7 @@ package com.bolingcavalry.service;
 import dev.langchain4j.chain.ConversationalChain;
 import dev.langchain4j.data.message.*;
 import dev.langchain4j.memory.ChatMemory;
-import dev.langchain4j.memory.chat.TokenWindowChatMemory;
-import dev.langchain4j.model.chat.request.ChatRequest;
 import dev.langchain4j.model.openai.OpenAiChatModel;
-import dev.langchain4j.model.openai.OpenAiTokenCountEstimator;
 
 import java.util.List;
 
@@ -14,6 +11,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.bolingcavalry.util.Tools;
 
 /**
  * 通义千问服务类，用于与通义千问模型进行交互
@@ -27,7 +26,10 @@ public class QwenService {
     private OpenAiChatModel openAiChatModel;
 
     @Autowired
-    private Assistant assistant;
+    private Assistant assistantGlobal;
+
+    @Autowired
+    private Assistant assistantById;
 
     /**
      * 低级API，手动添加原始聊天消息，实现聊天记忆功能
@@ -55,18 +57,6 @@ public class QwenService {
     }
 
     /**
-     * 创建一个ChatMemory实例，用于存储聊天记忆
-     * 
-     * @return ChatMemory实例
-     */
-    private ChatMemory createChatMemoryInstance() {
-        // 设置记忆长度是基于token的，所以这里要根据模型名称设定分词方式
-        String modelNameForToken = dev.langchain4j.model.openai.OpenAiChatModelName.GPT_4_O.toString();
-        // 可以基于最大token数量来创建，也可以基于最大消息数量来创建，方法是:MessageWindowChatMemory.withMaxMessages(100)
-        return TokenWindowChatMemory.withMaxTokens(5000, new OpenAiTokenCountEstimator(modelNameForToken));
-    }
-
-    /**
      * 低级API，手动添加ChatMessage到ChatMemory，实现聊天记忆功能
      * 
      * @param prompt 模板中的变量
@@ -74,7 +64,7 @@ public class QwenService {
      */
     public String lowLevelAddChatMessageToChatMemory(String prompt) {
         // 创建一个ChatMemory实例，通过token数量限制记忆长度
-        ChatMemory chatMemory = createChatMemoryInstance();
+        ChatMemory chatMemory = Tools.createChatMemoryInstance();
 
         // 这是第一次对话
         // 把第一次的请求添加到ChatMemory中
@@ -104,7 +94,7 @@ public class QwenService {
      */
     public String lowLevelByConversationChain(String prompt) {
         // 创建一个ChatMemory实例，通过token数量限制记忆长度
-        ChatMemory chatMemory = createChatMemoryInstance();
+        ChatMemory chatMemory = Tools.createChatMemoryInstance();
 
         // 创建一个ConversationChain实例来负责多轮聊天，并且把ChatMemory实例传入用于处理聊天记忆
         ConversationalChain chain = ConversationalChain.builder()
@@ -121,6 +111,37 @@ public class QwenService {
         logger.info("第二次响应：" + secondAnswer);
 
         return secondAnswer + "[from lowLevelByConversationChain]";
+    }
+
+    /**
+     * 高级API，基于内存的全局记忆
+     * 
+     * @param prompt
+     * @return
+     */
+    public String highLevelRamGlobal(String prompt) {
+
+        // 通过高级API实例进行对话，这是第一次问答
+        String firstAnswer = assistantGlobal.simpleChat("一百字介绍曹操是谁");
+        logger.info("第一次响应：" + firstAnswer);
+
+        // 通过高级API实例进行对话，这是第二次问答
+        String secondAnswer = assistantGlobal.simpleChat(prompt);
+        logger.info("第二次响应：" + secondAnswer);
+
+        return secondAnswer;
+    }
+
+    public String highLevelRamByUserID(int userID, String prompt) {
+        // 通过高级API实例进行对话，这是第一次问答
+        String firstAnswer = assistantById.chatByMemoryId(userID, "一百字介绍曹操是谁");
+        logger.info("第一次响应：" + firstAnswer);
+
+        // 通过高级API实例进行对话，这是第二次问答
+        String secondAnswer = assistantById.chatByMemoryId(userID, prompt);
+        logger.info("第二次响应：" + secondAnswer);
+
+        return secondAnswer;
     }
 
 }

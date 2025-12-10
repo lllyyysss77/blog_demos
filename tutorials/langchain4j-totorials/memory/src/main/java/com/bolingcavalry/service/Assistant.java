@@ -20,15 +20,11 @@ public interface Assistant {
     String simpleChat(String userMessage);
 
     /**
-     * 使用模板进行对话，返回助手的回答
+     * 带记忆的对话，返回助手的回答
      * 
-     * @param name 模板中的变量
+     * @param memoryId    记忆ID
+     * @param userMessage 用户消息
      * @return 助手生成的回答
      */
-    @UserMessage("简单介绍一下{{name}}")
-    String temlateChat(@V("name") String name);
-
-    @SystemMessage("你的回答不会超过一百汉字")
-    @UserMessage("简单介绍一下{{name}}")
-    String temlateChatWithSysMsg(@V("name") String name);
+    String chatByMemoryId(@MemoryId int memoryId, @UserMessage String userMessage);
 }

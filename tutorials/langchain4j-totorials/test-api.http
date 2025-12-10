@@ -125,3 +125,22 @@ Accept: application/json
 {
   "prompt": "他在与北方游牧民族的军事斗争中有哪些成就？"
 }
+
+### POST 高级API，基于内存的全局记忆
+POST http://localhost:8080/api/qwen/highlevel/global
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "他在军事上的最高成就是什么？"
+}
+
+### POST 高级API，基于内存的全局记忆
+POST http://localhost:8080/api/qwen/highlevel/byuserid
+Content-Type: application/json
+Accept: application/json
+
+{
+  "userId": 1001,
+  "prompt": "他的政治思想的根源是哪里？"
+}
