@@ -123,8 +123,8 @@ public class QwenController {
         }
     }
 
-    @PostMapping("/highlevel/global")
-    public ResponseEntity<Response> highLevelGlobal(@RequestBody PromptRequest request) {
+    @PostMapping("/highlevel/ram/global")
+    public ResponseEntity<Response> highLevelRamGlobal(@RequestBody PromptRequest request) {
         ResponseEntity<Response> checkRlt = check(request);
         if (checkRlt != null) {
             return checkRlt;
@@ -140,8 +140,8 @@ public class QwenController {
         }
     }
 
-    @PostMapping("/highlevel/byuserid")
-    public ResponseEntity<Response> highLevelByUserID(@RequestBody PromptRequest request) {
+    @PostMapping("/highlevel/ram/byuserid")
+    public ResponseEntity<Response> highLevelRamByUserID(@RequestBody PromptRequest request) {
         System.out.println("request : " + request);
         ResponseEntity<Response> checkRlt = check(request);
         if (checkRlt != null) {
