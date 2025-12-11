@@ -156,4 +156,41 @@ public class QwenController {
             return ResponseEntity.status(500).body(new Response("请求处理失败: " + e.getMessage()));
         }
     }
+
+    @PostMapping("/highlevel/db/global")
+    public ResponseEntity<Response> highLevelDbGlobal(@RequestBody PromptRequest request) {
+        ResponseEntity<Response> checkRlt = check(request);
+        if (checkRlt != null) {
+            return checkRlt;
+        }
+
+        try {
+            // 使用基于数据库的全局记忆功能
+            String response = qwenService.highLevelDbGlobal(request.getPrompt());
+            return ResponseEntity.ok(new Response(response));
+        } catch (Exception e) {
+            // 捕获异常并返回错误信息
+            return ResponseEntity.status(500).body(new Response("请求处理失败: " + e.getMessage()));
+        }
+    }
+
+    @PostMapping("/highlevel/db/byuserid")
+    public ResponseEntity<Response> highLevelDbByUserID(@RequestBody PromptRequest request) {
+        System.out.println("1. request : " + request);
+        ResponseEntity<Response> checkRlt = check(request);
+        if (checkRlt != null) {
+            return checkRlt;
+        }
+
+        try {
+            System.out.println("2. request : " + request);
+            // 使用基于数据库的用户ID记忆功能
+            String response = qwenService.highLevelDbByUserID(request.getUserId(), request.getPrompt());
+            System.out.println("3. request : " + request);
+            return ResponseEntity.ok(new Response(response));
+        } catch (Exception e) {
+            // 捕获异常并返回错误信息
+            return ResponseEntity.status(500).body(new Response("请求处理失败: " + e.getMessage()));
+        }
+    }
 }

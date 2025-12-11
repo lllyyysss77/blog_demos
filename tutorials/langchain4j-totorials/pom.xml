@@ -14,6 +14,7 @@
     <maven.compiler.target>21</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <dashscope.version>1.8.0-beta15</dashscope.version>
+    <mapdb.version>3.0.9</mapdb.version>
   </properties>
   
   <dependencyManagement>
@@ -45,6 +46,18 @@
             <version>${dashscope.version}</version>
         </dependency>
       <!-- 日志依赖由Spring Boot BOM自动管理，无需在此指定版本 -->
+
+      <dependency>
+            <groupId>org.mapdb</groupId>
+            <artifactId>mapdb</artifactId>
+            <version>${mapdb.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jetbrains.kotlin</groupId>
+                    <artifactId>kotlin-stdlib</artifactId>
+                </exclusion>
+            </exclusions>
+      </dependency>
     </dependencies>
   </dependencyManagement>
 

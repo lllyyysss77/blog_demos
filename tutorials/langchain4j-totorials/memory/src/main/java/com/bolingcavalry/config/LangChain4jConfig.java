@@ -9,9 +9,15 @@
 package com.bolingcavalry.config;
 
 import dev.langchain4j.memory.ChatMemory;
+import dev.langchain4j.memory.chat.ChatMemoryProvider;
 import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 
+import java.util.Map;
+
+import org.mapdb.DBMaker;
+import org.mapdb.DB;
+import static org.mapdb.Serializer.STRING;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -49,9 +55,9 @@ public class LangChain4jConfig {
     }
 
     @Bean
-    public Assistant assistantGlobal(OpenAiChatModel chatModel) {
-        // 创建一个ChatMemory实例，通过token数量限制记忆长度
-        ChatMemory chatMemory = Tools.createChatMemoryInstance();
+    public Assistant assistantRamGlobal(OpenAiChatModel chatModel) {
+        // 创建一个ChatMemory实例，通过token数量限制记忆长度，记录在内存中
+        ChatMemory chatMemory = Tools.createRamChatMemoryInstance();
 
         // 生成Assistant服务实例已经绑定了chatMemory
         return AiServices.builder(Assistant.class)
@@ -61,11 +67,40 @@ public class LangChain4jConfig {
     }
 
     @Bean
-    public Assistant assistantById(OpenAiChatModel chatModel) {
-        // 注意，这里通过chatMemoryProvider来指定每个id和chatMemory的对应关系
+    public Assistant assistantRamById(OpenAiChatModel chatModel) {
+        // 注意，这里通过chatMemoryProvider来指定每个id和chatMemory的对应关系，记录在内存中
         return AiServices.builder(Assistant.class)
                 .chatModel(chatModel)
-                .chatMemoryProvider(memoryId -> Tools.createChatMemoryInstance())
+                .chatMemoryProvider(memoryId -> Tools.createRamChatMemoryInstance())
                 .build();
     }
+
+    @Bean
+    public Assistant assistantDbGlobal(OpenAiChatModel chatModel) {
+        // 创建一个ChatMemory实例，通过消息数量限制记忆长度，记录在数据库中
+        ChatMemory chatMemory = Tools.createDbChatMemoryInstance("chat-memory-global.db", false);
+
+        // 生成Assistant服务实例已经绑定了chatMemory
+        return AiServices.builder(Assistant.class)
+                .chatModel(chatModel)
+                .chatMemory(chatMemory)
+                .build();
+    }
+
+    @Bean
+    public Assistant assistantDbById(OpenAiChatModel chatModel) {
+
+        ChatMemoryProvider chatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
+                .id(memoryId)
+                .maxMessages(100)
+                .chatMemoryStore(Tools.createStoreInstance("chat-memory-byid.db", true))
+                .build();
+
+        // 生成Assistant服务实例已经绑定了chatMemory
+        return AiServices.builder(Assistant.class)
+                .chatModel(chatModel)
+                .chatMemoryProvider(chatMemoryProvider)
+                .build();
+    }
+
 }

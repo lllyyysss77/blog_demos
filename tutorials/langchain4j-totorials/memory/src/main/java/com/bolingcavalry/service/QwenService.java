@@ -20,16 +20,24 @@ import com.bolingcavalry.util.Tools;
 @Service
 public class QwenService {
 
+    private static final String DESC_HUMAN = "一百字介绍曹操是谁";
+
     private static final Logger logger = LoggerFactory.getLogger(QwenService.class);
 
     @Autowired
     private OpenAiChatModel openAiChatModel;
 
     @Autowired
-    private Assistant assistantGlobal;
+    private Assistant assistantRamGlobal;
 
     @Autowired
-    private Assistant assistantById;
+    private Assistant assistantRamById;
+
+    @Autowired
+    private Assistant assistantDbGlobal;
+
+    @Autowired
+    private Assistant assistantDbById;
 
     /**
      * 低级API，手动添加原始聊天消息，实现聊天记忆功能
@@ -64,7 +72,7 @@ public class QwenService {
      */
     public String lowLevelAddChatMessageToChatMemory(String prompt) {
         // 创建一个ChatMemory实例，通过token数量限制记忆长度
-        ChatMemory chatMemory = Tools.createChatMemoryInstance();
+        ChatMemory chatMemory = Tools.createRamChatMemoryInstance();
 
         // 这是第一次对话
         // 把第一次的请求添加到ChatMemory中
@@ -94,7 +102,7 @@ public class QwenService {
      */
     public String lowLevelByConversationChain(String prompt) {
         // 创建一个ChatMemory实例，通过token数量限制记忆长度
-        ChatMemory chatMemory = Tools.createChatMemoryInstance();
+        ChatMemory chatMemory = Tools.createRamChatMemoryInstance();
 
         // 创建一个ConversationChain实例来负责多轮聊天，并且把ChatMemory实例传入用于处理聊天记忆
         ConversationalChain chain = ConversationalChain.builder()
@@ -103,7 +111,7 @@ public class QwenService {
                 .build();
 
         // 通过chain进行对话，这是第一次问答
-        String firstAnswer = chain.execute("一百字介绍曹操是谁");
+        String firstAnswer = chain.execute(DESC_HUMAN);
         logger.info("第一次响应：" + firstAnswer);
 
         // 通过chain进行对话，这是第二次问答
@@ -122,26 +130,64 @@ public class QwenService {
     public String highLevelRamGlobal(String prompt) {
 
         // 通过高级API实例进行对话，这是第一次问答
-        String firstAnswer = assistantGlobal.simpleChat("一百字介绍曹操是谁");
+        String firstAnswer = assistantRamGlobal.simpleChat(DESC_HUMAN);
         logger.info("第一次响应：" + firstAnswer);
 
         // 通过高级API实例进行对话，这是第二次问答
-        String secondAnswer = assistantGlobal.simpleChat(prompt);
+        String secondAnswer = assistantRamGlobal.simpleChat(prompt);
         logger.info("第二次响应：" + secondAnswer);
 
-        return secondAnswer;
+        return secondAnswer + "[from highLevelRamGlobal]";
     }
 
     public String highLevelRamByUserID(int userID, String prompt) {
         // 通过高级API实例进行对话，这是第一次问答
-        String firstAnswer = assistantById.chatByMemoryId(userID, "一百字介绍曹操是谁");
+        String firstAnswer = assistantRamById.chatByMemoryId(userID, DESC_HUMAN);
         logger.info("第一次响应：" + firstAnswer);
 
         // 通过高级API实例进行对话，这是第二次问答
-        String secondAnswer = assistantById.chatByMemoryId(userID, prompt);
+        String secondAnswer = assistantRamById.chatByMemoryId(userID, prompt);
         logger.info("第二次响应：" + secondAnswer);
 
-        return secondAnswer;
+        return secondAnswer + "[from highLevelRamByUserID]";
     }
 
+    /**
+     * 高级API，基于数据库的全局记忆
+     * 
+     * @param prompt
+     * @return
+     */
+    public String highLevelDbGlobal(String prompt) {
+
+        // 通过高级API实例进行对话，这是第一次问答
+        String firstAnswer = assistantDbGlobal.simpleChat(DESC_HUMAN);
+        logger.info("第一次响应：" + firstAnswer);
+
+        // 通过高级API实例进行对话，这是第二次问答
+        String secondAnswer = assistantDbGlobal.simpleChat(prompt);
+        logger.info("第二次响应：" + secondAnswer);
+
+        return secondAnswer + "[from highLevelDbGlobal]";
+    }
+
+    /**
+     * 高级API，基于数据库的用户记忆
+     * 
+     * @param userID
+     * @param prompt
+     * @return
+     */
+    public String highLevelDbByUserID(int userID, String prompt) {
+        // 通过高级API实例进行对话，这是第一次问答
+        String firstAnswer = assistantDbById.chatByMemoryId(userID, DESC_HUMAN);
+        logger.info("第一次响应：" + firstAnswer);
+
+        // 通过高级API实例进行对话，这是第二次问答
+        String secondAnswer = assistantDbById.chatByMemoryId(userID, prompt);
+        logger.info("第二次响应：" + secondAnswer);
+
+        return secondAnswer + "[from highLevelDbByUserID]";
+
+    }
 }

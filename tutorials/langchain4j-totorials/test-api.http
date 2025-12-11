@@ -127,7 +127,7 @@ Accept: application/json
 }
 
 ### POST 高级API，基于内存的全局记忆
-POST http://localhost:8080/api/qwen/highlevel/global
+POST http://localhost:8080/api/qwen/highlevel/ram/global
 Content-Type: application/json
 Accept: application/json
 
@@ -136,11 +136,30 @@ Accept: application/json
 }
 
 ### POST 高级API，基于内存的全局记忆
-POST http://localhost:8080/api/qwen/highlevel/byuserid
+POST http://localhost:8080/api/qwen/highlevel/ram/byuserid
 Content-Type: application/json
 Accept: application/json
 
 {
   "userId": 1001,
   "prompt": "他的政治思想的根源是哪里？"
+}
+
+### POST 高级API，基于数据库的全局记忆
+POST http://localhost:8080/api/qwen/highlevel/db/global
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "他面临过的最大挑战是什么？"
+}
+
+### POST 高级API，基于数据库的全局记忆
+POST http://localhost:8080/api/qwen/highlevel/db/byuserid
+Content-Type: application/json
+Accept: application/json
+
+{
+  "userId": 1002,
+  "prompt": "他的军事思想对后世有什么影响？"
 }
