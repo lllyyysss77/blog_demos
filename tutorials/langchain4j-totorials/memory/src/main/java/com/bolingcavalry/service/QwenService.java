@@ -5,6 +5,7 @@ import dev.langchain4j.data.message.*;
 import dev.langchain4j.memory.ChatMemory;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -39,6 +40,8 @@ public class QwenService {
     @Autowired
     private Assistant assistantDbById;
 
+    private List<ChatMessage> history = new ArrayList<>();
+
     /**
      * 低级API，手动添加原始聊天消息，实现聊天记忆功能
      * 
@@ -46,22 +49,18 @@ public class QwenService {
      * @return 助手生成的回答
      */
     public String lowLevelAddRawChatMessage(String prompt) {
-        // 这是第一次对话的请求
-        UserMessage firstReq = UserMessage.from("一百字介绍曹操是谁");
-        // 这是第一次对话的响应
-        AiMessage firstResp = openAiChatModel.chat(firstReq).aiMessage();
-
-        logger.info("第一次响应：" + firstResp.text());
-
-        // 把第一次的请求响应，以及第二次的请求都放入集合，一共三条记录
-        List<ChatMessage> history = List.of(firstReq, firstResp, UserMessage.from(prompt));
+        // 每一次的请求都存入历史对象
+        history.add(UserMessage.from(prompt));
 
         // 这是第二次对话，已经带上了第一次的请求和响应
-        AiMessage secondResp = openAiChatModel.chat(history).aiMessage();
+        AiMessage resp = openAiChatModel.chat(history).aiMessage();
 
-        logger.info("第二次响应：" + secondResp.text());
+        // 每一次的响应都存入历史对象
+        history.add(resp);
 
-        return secondResp.text() + "[from lowLevelAddRawChatMessage]";
+        logger.info("响应：" + resp.text());
+
+        return resp.text() + "[from lowLevelAddRawChatMessage]";
     }
 
     /**
