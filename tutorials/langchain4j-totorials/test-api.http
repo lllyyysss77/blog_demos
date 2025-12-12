@@ -116,7 +116,7 @@ Accept: application/json
   "prompt": "他有哪些主要对手？"
 }
 
-### POST 低级API，把ChatMessage添加到ChatMemory实现聊天记忆
+### POST 2.1 低级API，把ChatMessage添加到ChatMemory实现聊天记忆
 POST http://localhost:8080/api/qwen/lowlevel/addchatmessagetochatmemory
 Content-Type: application/json
 Accept: application/json
@@ -125,7 +125,7 @@ Accept: application/json
   "prompt": "一百字介绍曹操"
 }
 
-### POST 低级API，把ChatMessage添加到ChatMemory实现聊天记忆
+### POST 2.2 低级API，把ChatMessage添加到ChatMemory实现聊天记忆
 POST http://localhost:8080/api/qwen/lowlevel/addchatmessagetochatmemory
 Content-Type: application/json
 Accept: application/json
@@ -135,10 +135,16 @@ Accept: application/json
 }
 
 
+### POST 3.1 低级API，通过ConversationChain实现聊天记忆
+POST http://localhost:8080/api/qwen/lowlevel/byconversationchain
+Content-Type: application/json
+Accept: application/json
 
+{
+  "prompt": "一百字介绍曹操"
+}
 
-
-### POST 低级API，通过ConversationChain实现聊天记忆
+### POST 3.2 低级API，通过ConversationChain实现聊天记忆
 POST http://localhost:8080/api/qwen/lowlevel/byconversationchain
 Content-Type: application/json
 Accept: application/json
@@ -147,7 +153,17 @@ Accept: application/json
   "prompt": "他在与北方游牧民族的军事斗争中有哪些成就？"
 }
 
-### POST 高级API，基于内存的全局记忆
+
+### POST 4.1 高级API，基于内存的全局记忆
+POST http://localhost:8080/api/qwen/highlevel/ram/global
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "一百字介绍曹操"
+}
+
+### POST 4.2 高级API，基于内存的全局记忆
 POST http://localhost:8080/api/qwen/highlevel/ram/global
 Content-Type: application/json
 Accept: application/json
@@ -156,7 +172,18 @@ Accept: application/json
   "prompt": "他在军事上的最高成就是什么？"
 }
 
-### POST 高级API，基于内存的全局记忆
+
+### 5.1 POST 高级API，基于内存的用户记忆
+POST http://localhost:8080/api/qwen/highlevel/ram/byuserid
+Content-Type: application/json
+Accept: application/json
+
+{
+  "userId": 1001,
+  "prompt": "一百字介绍曹操"
+}
+
+### 5.2 POST 高级API，基于内存的用户记忆
 POST http://localhost:8080/api/qwen/highlevel/ram/byuserid
 Content-Type: application/json
 Accept: application/json
@@ -166,7 +193,17 @@ Accept: application/json
   "prompt": "他的政治思想的根源是哪里？"
 }
 
-### POST 高级API，基于数据库的全局记忆
+
+### POST 6.1 高级API，基于数据库的全局记忆
+POST http://localhost:8080/api/qwen/highlevel/db/global
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "一百字介绍曹操"
+}
+
+### POST 6.2 高级API，基于数据库的全局记忆
 POST http://localhost:8080/api/qwen/highlevel/db/global
 Content-Type: application/json
 Accept: application/json
@@ -175,12 +212,22 @@ Accept: application/json
   "prompt": "他面临过的最大挑战是什么？"
 }
 
-### POST 高级API，基于数据库的全局记忆
+### POST 7.1 高级API，基于数据库的全局记忆
 POST http://localhost:8080/api/qwen/highlevel/db/byuserid
 Content-Type: application/json
 Accept: application/json
 
 {
-  "userId": 1002,
+  "userId": 1001,
+  "prompt": "一百字介绍曹操"
+}
+
+### POST 7.2 高级API，基于数据库的全局记忆
+POST http://localhost:8080/api/qwen/highlevel/db/byuserid
+Content-Type: application/json
+Accept: application/json
+
+{
+  "userId": 1001,
   "prompt": "他的军事思想对后世有什么影响？"
 }

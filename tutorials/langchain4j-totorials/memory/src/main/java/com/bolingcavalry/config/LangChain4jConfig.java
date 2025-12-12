@@ -22,6 +22,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import dev.langchain4j.service.AiServices;
+import dev.langchain4j.store.memory.chat.ChatMemoryStore;
+
 import com.bolingcavalry.service.Assistant;
 import com.bolingcavalry.util.Tools;
 
@@ -89,11 +91,12 @@ public class LangChain4jConfig {
 
     @Bean
     public Assistant assistantDbById(OpenAiChatModel chatModel) {
+        ChatMemoryStore chatMemoryStore = Tools.createStoreInstance("chat-memory-byid.db", true);
 
         ChatMemoryProvider chatMemoryProvider = memoryId -> MessageWindowChatMemory.builder()
                 .id(memoryId)
                 .maxMessages(100)
-                .chatMemoryStore(Tools.createStoreInstance("chat-memory-byid.db", true))
+                .chatMemoryStore(chatMemoryStore)
                 .build();
 
         // 生成Assistant服务实例已经绑定了chatMemory

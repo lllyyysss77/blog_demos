@@ -27,14 +27,14 @@ public class EmbeddedByIdDb implements ChatMemoryStore {
 
     @Override
     public List<ChatMessage> getMessages(Object memoryId) {
-        String json = map.get((Integer) memoryId);
+        String json = map.get((int) memoryId);
         return messagesFromJson(json);
     }
 
     @Override
     public void updateMessages(Object memoryId, List<ChatMessage> messages) {
         String json = messagesToJson(messages);
-        map.put((Integer) memoryId, json);
+        map.put((int) memoryId, json);
         // 只有当db不为null时才提交事务
         if (db != null) {
             db.commit();
@@ -43,7 +43,7 @@ public class EmbeddedByIdDb implements ChatMemoryStore {
 
     @Override
     public void deleteMessages(Object memoryId) {
-        map.remove((Integer) memoryId);
+        map.remove((int) memoryId);
         // 只有当db不为null时才提交事务
         if (db != null) {
             db.commit();
