@@ -21,8 +21,6 @@ import com.bolingcavalry.util.Tools;
 @Service
 public class QwenService {
 
-    private static final String DESC_HUMAN = "一百字介绍曹操是谁";
-
     private static final Logger logger = LoggerFactory.getLogger(QwenService.class);
 
     @Autowired
@@ -108,9 +106,9 @@ public class QwenService {
                     .build();
         }
 
-        // 通过chain进行对话，这是第二次问答
+        // 通过chain进行对话
         String answer = chain.execute(prompt);
-        logger.info("第二次响应：" + answer);
+        logger.info("响应：" + answer);
 
         return answer + "[from lowLevelByConversationChain]";
     }
