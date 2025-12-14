@@ -231,3 +231,13 @@ Accept: application/json
   "userId": 1001,
   "prompt": "他的军事思想对后世有什么影响？"
 }
+
+
+### POST 最简单的流式响应
+POST http://localhost:8080/api/qwen/normalstreamingchat
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "一百字介绍曹操"
+}

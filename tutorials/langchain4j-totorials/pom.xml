@@ -67,5 +67,6 @@
     <module>demo-with-spring-boot</module>
     <module>image-tutorial</module>
     <module>memory</module>
+    <module>streaming-response</module>
   </modules>
 </project>
