@@ -8,17 +8,15 @@
  */
 package com.bolingcavalry.controller;
 
-import com.bolingcavalry.service.QwenService;
-import lombok.Data;
-
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.bolingcavalry.service.QwenService;
+
+import lombok.Data;
 
 /**
  * 通义千问控制器，处理与大模型交互的HTTP请求
