@@ -8,10 +8,9 @@
  */
 package com.bolingcavalry.controller;
 
-import org.springframework.http.ResponseEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +26,8 @@ import lombok.Data;
 @RestController
 @RequestMapping("/api/qwen")
 public class QwenController {
+
+    private static final Logger logger = LoggerFactory.getLogger(QwenController.class);
 
     private final QwenService qwenService;
 
@@ -61,52 +62,18 @@ public class QwenController {
     }
 
     /**
-     * 检查请求体是否有效
-     * 
-     * @param request 包含提示词的请求体
-     * @return 如果有效则返回null，否则返回包含错误信息的ResponseEntity
-     */
-    private ResponseEntity<Response> check(PromptRequest request) {
-        if (request == null || request.getPrompt() == null || request.getPrompt().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(new Response("提示词不能为空"));
-        }
-        return null;
-    }
-
-    /**
      * 检查提示词参数是否有效
      * 
      * @param prompt 提示词参数
-     * @return 如果有效则返回null，否则返回包含错误信息的ResponseEntity
+     * @return 如果有效则返回null，否则返回包含错误信息的SseEmitter
      */
-    private ResponseEntity<String> checkPrompt(String prompt) {
+    private SseEmitter checkPrompt(String prompt) {
         if (prompt == null || prompt.trim().isEmpty()) {
-            return ResponseEntity.badRequest().body("提示词不能为空");
+            SseEmitter emitter = new SseEmitter();
+            emitter.completeWithError(new IllegalArgumentException("提示词不能为空"));
+            return emitter;
         }
         return null;
-    }
-
-    /**
-     * 普通流式聊天接口
-     * 
-     * @param request 包含提示词的请求体
-     * @return 包含模型响应的ResponseEntity
-     */
-    @PostMapping("/normalstreamingchat")
-    public ResponseEntity<Response> normalStreamingChat(@RequestBody PromptRequest request) {
-        ResponseEntity<Response> checkRlt = check(request);
-        if (checkRlt != null) {
-            return checkRlt;
-        }
-
-        try {
-            // 调用QwenService进行流式聊天
-            qwenService.normalStreamingChat(request.getPrompt());
-            return ResponseEntity.ok(new Response("流式聊天开始"));
-        } catch (Exception e) {
-            // 捕获异常并返回错误信息
-            return ResponseEntity.status(500).body(new Response("流式聊天失败: " + e.getMessage()));
-        }
     }
 
     /**
@@ -117,20 +84,46 @@ public class QwenController {
      * @return SseEmitter实例，用于向客户端发送流式响应
      */
     @GetMapping("/sse-streaming-chat")
-    public SseEmitter sseStreamingChat(@RequestParam(name = "prompt") String prompt,
+    public SseEmitter streamingChat(@RequestParam(name = "prompt") String prompt,
             @RequestParam(name = "userId") int userId) {
+        logger.info("收到来自用户[{}]的请求, 提示词: {}", userId, prompt);
         // 检查提示词是否有效
-        ResponseEntity<String> checkRlt = checkPrompt(prompt);
+        SseEmitter checkRlt = checkPrompt(prompt);
         if (checkRlt != null) {
-            // 如果提示词无效，创建一个错误的SseEmitter
-            SseEmitter emitter = new SseEmitter();
-            emitter.completeWithError(new IllegalArgumentException("提示词不能为空"));
-            return emitter;
+            return checkRlt;
         }
 
         try {
-            // 调用QwenService的SSE流式聊天方法
-            return qwenService.sseStreamingChat(prompt);
+            // 调用QwenService的流式聊天方法
+            return qwenService.streamingChat(prompt);
+        } catch (Exception e) {
+            // 捕获异常并返回错误的SseEmitter
+            SseEmitter emitter = new SseEmitter();
+            emitter.completeWithError(e);
+            return emitter;
+        }
+    }
+
+    /**
+     * 基于高级API的SSE流式聊天接口（用于网页实时显示）
+     * 
+     * @param prompt 提示词
+     * @param userId 用户ID
+     * @return SseEmitter实例，用于向客户端发送流式响应
+     */
+    @GetMapping("/high-level-sse-streaming-chat")
+    public SseEmitter highLevelStreamingChat(@RequestParam(name = "prompt") String prompt,
+            @RequestParam(name = "userId") int userId) {
+        logger.info("收到来自用户[{}]的高级API请求, 提示词: {}", userId, prompt);
+        // 检查提示词是否有效
+        SseEmitter checkRlt = checkPrompt(prompt);
+        if (checkRlt != null) {
+            return checkRlt;
+        }
+
+        try {
+            // 调用QwenService的高级API流式聊天方法
+            return qwenService.highLevelStreamingChat(prompt);
         } catch (Exception e) {
             // 捕获异常并返回错误的SseEmitter
             SseEmitter emitter = new SseEmitter();

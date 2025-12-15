@@ -85,7 +85,8 @@
         <h1>流式聊天演示</h1>
         <div class="input-area">
             <textarea id="promptInput" placeholder="请输入您的问题..."></textarea>
-            <button id="sendBtn" onclick="sendMessage()">发送</button>
+            <button id="sendBtn" onclick="sendMessage()">低级API发送</button>
+            <button id="highLevelSendBtn" onclick="sendHighLevelMessage()">高级API发送</button>
         </div>
         <div class="status">
             <span id="statusText">就绪</span>
@@ -97,6 +98,18 @@
     <script>
         let eventSource = null;
 
+        function disableAllButtons() {
+            document.getElementById('sendBtn').disabled = true;
+            document.getElementById('highLevelSendBtn').disabled = true;
+            document.getElementById('promptInput').disabled = true;
+        }
+
+        function enableAllButtons() {
+            document.getElementById('sendBtn').disabled = false;
+            document.getElementById('highLevelSendBtn').disabled = false;
+            document.getElementById('promptInput').disabled = false;
+        }
+
         function sendMessage() {
             const prompt = document.getElementById('promptInput').value.trim();
             if (!prompt) {
@@ -105,15 +118,35 @@
             }
 
             // 禁用按钮和输入框
-            document.getElementById('sendBtn').disabled = true;
-            document.getElementById('promptInput').disabled = true;
-            document.getElementById('statusText').textContent = '正在发送请求...';
+            disableAllButtons();
+            document.getElementById('statusText').textContent = '正在发送低级API请求...';
             document.getElementById('loading').style.display = 'inline-block';
             document.getElementById('responseArea').textContent = '';
 
-            // 使用Server-Sent Events建立连接
+            // 使用Server-Sent Events建立连接（低级API）
             eventSource = new EventSource(`/api/qwen/sse-streaming-chat?prompt=${encodeURIComponent(prompt)}&userId=1`);
+            setupEventSourceListeners();
+        }
 
+        function sendHighLevelMessage() {
+            const prompt = document.getElementById('promptInput').value.trim();
+            if (!prompt) {
+                alert('请输入问题！');
+                return;
+            }
+
+            // 禁用按钮和输入框
+            disableAllButtons();
+            document.getElementById('statusText').textContent = '正在发送高级API请求...';
+            document.getElementById('loading').style.display = 'inline-block';
+            document.getElementById('responseArea').textContent = '';
+
+            // 使用Server-Sent Events建立连接（高级API）
+            eventSource = new EventSource(`/api/qwen/high-level-sse-streaming-chat?prompt=${encodeURIComponent(prompt)}&userId=1`);
+            setupEventSourceListeners();
+        }
+
+        function setupEventSourceListeners() {
             // 处理接收到的消息
             eventSource.onmessage = function(event) {
                 const data = event.data;
@@ -129,8 +162,7 @@
                 console.error('SSE Error:', error);
                 document.getElementById('statusText').textContent = '连接错误';
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('sendBtn').disabled = false;
-                document.getElementById('promptInput').disabled = false;
+                enableAllButtons();
                 if (eventSource.readyState !== EventSource.CLOSED) {
                     eventSource.close();
                 }
@@ -140,8 +172,7 @@
             eventSource.onclose = function() {
                 document.getElementById('statusText').textContent = '会话结束';
                 document.getElementById('loading').style.display = 'none';
-                document.getElementById('sendBtn').disabled = false;
-                document.getElementById('promptInput').disabled = false;
+                enableAllButtons();
             };
         }
 
