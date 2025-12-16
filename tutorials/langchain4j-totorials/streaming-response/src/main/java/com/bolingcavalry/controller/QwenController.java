@@ -95,7 +95,7 @@ public class QwenController {
 
         try {
             // 调用QwenService的流式聊天方法
-            return qwenService.streamingChat(prompt);
+            return qwenService.lowLevelStreamingChat(prompt);
         } catch (Exception e) {
             // 捕获异常并返回错误的SseEmitter
             SseEmitter emitter = new SseEmitter();

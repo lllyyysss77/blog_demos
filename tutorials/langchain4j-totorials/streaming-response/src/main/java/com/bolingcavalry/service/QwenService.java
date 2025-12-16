@@ -4,18 +4,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import jakarta.annotation.PostConstruct;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
-import dev.langchain4j.chain.ConversationalChain;
-import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.chat.response.StreamingChatResponseHandler;
-import dev.langchain4j.service.AiServices;
 import dev.langchain4j.service.TokenStream;
-import dev.langchain4j.service.SystemMessage;
-import dev.langchain4j.service.UserMessage;
 
 /**
  * 通义千问服务类，用于与通义千问模型进行交互
@@ -28,30 +22,8 @@ public class QwenService {
     @Autowired
     private StreamingChatModel streamingChatModel;
 
-    /**
-     * 普通流式聊天方法（仅记录日志）
-     * 
-     * @param prompt 提示词
-     */
-    public void normalStreamingChat(String prompt) {
-        streamingChatModel.chat(prompt, new StreamingChatResponseHandler() {
-
-            @Override
-            public void onPartialResponse(String partialResponse) {
-                logger.info("partialResponse: {}", partialResponse);
-            }
-
-            @Override
-            public void onCompleteResponse(ChatResponse completeResponse) {
-                logger.info("completeResponse: {}", completeResponse);
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                logger.error("throwable: {}", throwable);
-            }
-        });
-    }
+    @Autowired
+    private StreamingAssistant streamingAssistant;
 
     /**
      * SSE流式聊天方法（用于网页实时显示）
@@ -59,7 +31,7 @@ public class QwenService {
      * @param prompt 提示词
      * @return SseEmitter实例，用于向客户端发送流式响应
      */
-    public SseEmitter streamingChat(String prompt) {
+    public SseEmitter lowLevelStreamingChat(String prompt) {
         // 创建SseEmitter，设置超时时间为30分钟
         SseEmitter emitter = new SseEmitter(30 * 60 * 1000L);
 
@@ -115,29 +87,6 @@ public class QwenService {
         });
 
         return emitter;
-    }
-
-    /**
-     * 高级API的流式响应接口定义
-     */
-    interface StreamingAssistant {
-        @SystemMessage("你是一个专业的AI助手，能够提供准确、清晰的回答。")
-        TokenStream chat(@UserMessage String message);
-    }
-
-    // 高级API的AI服务实例（延迟初始化）
-    private StreamingAssistant streamingAssistant;
-
-    /**
-     * Spring bean初始化完成后执行
-     */
-    @PostConstruct
-    public void init() {
-        // 在依赖注入完成后创建高级API的AI服务实例
-        this.streamingAssistant = AiServices.builder(StreamingAssistant.class)
-                .streamingChatModel(streamingChatModel)
-                .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
-                .build();
     }
 
     /**

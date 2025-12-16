@@ -12,8 +12,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import com.bolingcavalry.service.StreamingAssistant;
+
+import dev.langchain4j.memory.chat.MessageWindowChatMemory;
 import dev.langchain4j.model.chat.StreamingChatModel;
 import dev.langchain4j.model.openai.OpenAiStreamingChatModel;
+import dev.langchain4j.service.AiServices;
 
 /**
  * LangChain4j配置类
@@ -41,6 +45,14 @@ public class LangChain4jConfig {
                 .apiKey(apiKey)
                 .modelName(modelName)
                 .baseUrl(baseUrl)
+                .build();
+    }
+
+    @Bean
+    public StreamingAssistant streamingAssistant(StreamingChatModel streamingChatModel) {
+        return AiServices.builder(StreamingAssistant.class)
+                .streamingChatModel(streamingChatModel)
+                .chatMemory(MessageWindowChatMemory.withMaxMessages(10))
                 .build();
     }
 
