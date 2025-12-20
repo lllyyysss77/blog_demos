@@ -241,3 +241,22 @@ Accept: application/json
 {
   "prompt": "一百字介绍曹操"
 }
+
+### POST 高级API的实例用AiService注解创建，model实例在配置类中用代码创建
+POST http://localhost:8080/api/qwen/codeandannonation/simplechat
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "介绍一下曹操的五子良将"
+}
+
+
+###  高级API的实例用AiService注解创建，model实例用配置信息和openai的starter创建
+POST http://localhost:8080/api/qwen/onlyannonation/simplechat
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "介绍一下西魏八柱国"
+}

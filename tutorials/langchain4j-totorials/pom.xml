@@ -68,5 +68,7 @@
     <module>image-tutorial</module>
     <module>memory</module>
     <module>streaming-response</module>
+    <module>ai-service-code-and-annonation</module>
+    <module>ai-service-only-annonation</module>
   </modules>
 </project>
