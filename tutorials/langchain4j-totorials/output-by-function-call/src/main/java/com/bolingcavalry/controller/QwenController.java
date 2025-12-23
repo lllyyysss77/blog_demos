@@ -62,15 +62,15 @@ public class QwenController {
         return null;
     }
 
-    @PostMapping("/simplechat")
-    public ResponseEntity<Response> simpleChat(@RequestBody PromptRequest request) {
+    @PostMapping("/output/byfunctioncall")
+    public ResponseEntity<Response> byPrompt(@RequestBody PromptRequest request) {
         ResponseEntity<Response> checkRlt = check(request);
         if (checkRlt != null) {
             return checkRlt;
         }
 
         try {
-            String response = qwenService.simpleChat(request.getPrompt());
+            String response = qwenService.byFunctionCall(request.getPrompt());
             return ResponseEntity.ok(new Response(response));
         } catch (Exception e) {
             // 捕获异常并返回错误信息

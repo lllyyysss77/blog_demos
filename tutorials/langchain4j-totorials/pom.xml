@@ -70,5 +70,7 @@
     <module>streaming-response</module>
     <module>ai-service-code-and-annonation</module>
     <module>ai-service-only-annonation</module>
+    <module>output-by-prompt</module>
+    <module>output-by-function-call</module>
   </modules>
 </project>

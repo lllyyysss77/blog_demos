@@ -260,3 +260,23 @@ Accept: application/json
 {
   "prompt": "介绍一下西魏八柱国"
 }
+
+
+
+###  用提示词实现json格式的输出
+POST http://localhost:8080/api/qwen/output/byprompt
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "给出伊阙之战的关键信息，以json格式输出，字段包括：主要人物、时间、简介，格式是{\"main_characters\":[\"\",\"\"],\"year\":2000,\"description\":\"\"}"
+}
+
+###  用提示词实现json格式的输出
+POST http://localhost:8080/api/qwen/output/byfunctioncall
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "介绍昆阳之战"
+}

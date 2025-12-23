@@ -5,6 +5,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bolingcavalry.vo.HistoryEvent;
+
+import java.io.IOException;
+
 /**
  * 通义千问服务类，用于与通义千问模型进行交互
  */
@@ -17,14 +21,14 @@ public class QwenService {
     private Assistant assistant;
 
     /**
-     * 最简单的高级API对话
+     * 通过提示词range大模型返回JSON格式的内容
      * 
      * @param prompt
      * @return
      */
-    public String simpleChat(String prompt) {
-        String answer = assistant.simpleChat(prompt);
-        logger.info("响应：" + answer);
-        return answer + "[from simpleChat]";
+    public String byFunctionCall(String prompt) {
+        HistoryEvent event = assistant.byFunctionCall(prompt);
+        logger.info("响应：" + event);
+        return event.toString() + "[from byFunctionCall]";
     }
 }
