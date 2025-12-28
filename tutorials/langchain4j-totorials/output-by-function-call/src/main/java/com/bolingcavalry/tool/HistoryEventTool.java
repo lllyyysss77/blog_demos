@@ -1,11 +1,12 @@
 package com.bolingcavalry.tool;
 
-import com.bolingcavalry.vo.HistoryEvent;
-import dev.langchain4j.agent.tool.Tool;
+import java.util.List;
+
 import org.springframework.stereotype.Component;
 
-import java.util.Arrays;
-import java.util.List;
+import com.bolingcavalry.vo.HistoryEvent;
+
+import dev.langchain4j.agent.tool.Tool;
 
 /**
  * 历史事件提取工具，用于从文本中提取历史事件信息
