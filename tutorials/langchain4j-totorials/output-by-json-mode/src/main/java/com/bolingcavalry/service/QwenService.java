@@ -3,7 +3,7 @@ package com.bolingcavalry.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import dev.langchain4j.model.openai.OpenAiChatModel;
+import com.bolingcavalry.vo.HistoryEvent;
 
 /**
  * 通义千问服务类，用于与通义千问模型进行交互
@@ -12,11 +12,10 @@ import dev.langchain4j.model.openai.OpenAiChatModel;
 public class QwenService {
 
     @Autowired
-    private OpenAiChatModel modelFromSchema;
+    private Assistant assistantWithModelFromSchema;
 
     @Autowired
-    private OpenAiChatModel modelFromObject;
-
+    private Assistant assistantWithModelFromObject;
 
     /**
      * 调用通义千问模型进行对话
@@ -24,8 +23,8 @@ public class QwenService {
      * @param message 用户消息
      * @return AI回复
      */
-    public String chatByModelFromSchema(String message) {
-        return modelFromSchema.chat(message) + "from modelFromSchema";
+    public HistoryEvent chatByModelFromSchema(String message) {
+        return assistantWithModelFromSchema.simpleChat(message);
     }
 
     /**
@@ -34,7 +33,7 @@ public class QwenService {
      * @param message 用户消息
      * @return AI回复
      */
-    public String chatByModelFromObject(String message) {
-        return modelFromObject.chat(message) + "from modelFromObject";
+    public HistoryEvent chatByModelFromObject(String message) {
+        return assistantWithModelFromObject.simpleChat(message);
     }
 }

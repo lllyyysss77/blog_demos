@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.bolingcavalry.service.QwenService;
+import com.bolingcavalry.vo.HistoryEvent;
 
 import lombok.Data;
 
@@ -42,9 +43,9 @@ public class QwenController {
      */
     @Data
     static class Response {
-        private String result;
+        private HistoryEvent result;
 
-        public Response(String result) {
+        public Response(HistoryEvent result) {
             this.result = result;
         }
     }
@@ -57,24 +58,51 @@ public class QwenController {
      */
     private ResponseEntity<Response> check(PromptRequest request) {
         if (request == null || request.getPrompt() == null || request.getPrompt().trim().isEmpty()) {
-            return ResponseEntity.badRequest().body(new Response("提示词不能为空"));
+            HistoryEvent errRlt = new HistoryEvent();
+            errRlt.setDescription("提示词不能为空");
+
+            return ResponseEntity.badRequest().body(new Response(errRlt));
         }
         return null;
     }
 
-    @PostMapping("/output/modelfromschema")
-    public ResponseEntity<Response> byPrompt(@RequestBody PromptRequest request) {
+    /**
+     * 封装一个通用方法，根据isModelFromSchema参数调用不同的服务方法
+     * 
+     * @param request
+     * @param isModelFromSchema
+     * @return
+     */
+    private ResponseEntity<Response> chat(PromptRequest request, boolean isModelFromSchema) {
         ResponseEntity<Response> checkRlt = check(request);
         if (checkRlt != null) {
             return checkRlt;
         }
 
         try {
-            String response = qwenService.chatByModelFromSchema(request.getPrompt());
-            return ResponseEntity.ok(new Response(response));
+            HistoryEvent historyEvent = null;
+            if (isModelFromSchema) {
+                historyEvent = qwenService.chatByModelFromSchema(request.getPrompt());
+            } else {
+                historyEvent = qwenService.chatByModelFromObject(request.getPrompt());
+            }
+
+            return ResponseEntity.ok(new Response(historyEvent));
         } catch (Exception e) {
+            HistoryEvent errRlt = new HistoryEvent();
+            errRlt.setDescription("请求处理失败: " + e.getMessage());
             // 捕获异常并返回错误信息
-            return ResponseEntity.status(500).body(new Response("请求处理失败: " + e.getMessage()));
+            return ResponseEntity.status(500).body(new Response(errRlt));
         }
+    }
+
+    @PostMapping("/output/modelfromschema")
+    public ResponseEntity<Response> modelfromschema(@RequestBody PromptRequest request) {
+        return chat(request, true);
+    }
+
+    @PostMapping("/output/modelfromobject")
+    public ResponseEntity<Response> modelfromobject(@RequestBody PromptRequest request) {
+        return chat(request, false);
     }
 }
