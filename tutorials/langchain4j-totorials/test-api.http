@@ -282,10 +282,19 @@ Accept: application/json
 }
 
 ###  用提示词实现json格式的输出
+POST http://localhost:8080/api/qwen/output/modelfromobject
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "介绍白江川之战"
+}
+
+###  用提示词实现json格式的输出
 POST http://localhost:8080/api/qwen/output/modelfromschema
 Content-Type: application/json
 Accept: application/json
 
 {
-  "prompt": "介绍温井之战"
+  "prompt": "介绍六镇之乱"
 }

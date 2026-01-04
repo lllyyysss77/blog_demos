@@ -1,5 +1,7 @@
 package com.bolingcavalry.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,8 @@ import com.bolingcavalry.vo.HistoryEvent;
  */
 @Service
 public class QwenService {
+
+    private static final Logger logger = LoggerFactory.getLogger(QwenService.class);
 
     @Autowired
     private Assistant assistantWithModelFromSchema;
@@ -24,7 +28,9 @@ public class QwenService {
      * @return AI回复
      */
     public HistoryEvent chatByModelFromSchema(String message) {
-        return assistantWithModelFromSchema.simpleChat(message);
+        HistoryEvent rlt = assistantWithModelFromSchema.simpleChat(message);
+        logger.info("2. 收到响应对象: {}", rlt);
+        return rlt;
     }
 
     /**
@@ -34,6 +40,8 @@ public class QwenService {
      * @return AI回复
      */
     public HistoryEvent chatByModelFromObject(String message) {
-        return assistantWithModelFromObject.simpleChat(message);
+        HistoryEvent rlt = assistantWithModelFromObject.simpleChat(message);
+        logger.info("1. 收到响应对象: {}", rlt);
+        return rlt;
     }
 }
