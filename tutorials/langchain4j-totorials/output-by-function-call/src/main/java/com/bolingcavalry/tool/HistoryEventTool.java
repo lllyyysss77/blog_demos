@@ -25,6 +25,11 @@ public class HistoryEventTool {
      */
     @Tool("创建历史事件对象，包含主要人物、发生年份和事件描述")
     public HistoryEvent createHistoryEvent(List<String> mainCharacters, int year, String description) {
-        return null;
+        System.out.println("1aabbcc");
+        HistoryEvent rlt = new HistoryEvent();
+        rlt.setMainCharacters(mainCharacters);
+        rlt.setYear(year);
+        rlt.setDescription(description);
+        return rlt;
     }
 }
