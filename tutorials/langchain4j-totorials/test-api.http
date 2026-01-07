@@ -298,3 +298,13 @@ Accept: application/json
 {
   "prompt": "介绍六镇之乱"
 }
+
+
+###  用提示词实现json格式的输出
+POST http://localhost:8080/api/qwen/tool/getwether
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "查一下广东深圳的天气"
+}

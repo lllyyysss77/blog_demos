@@ -73,5 +73,6 @@
     <module>output-by-prompt</module>
     <module>output-by-function-call</module>
     <module>output-by-json-mode</module>
+    <module>tools-low-level</module>
   </modules>
 </project>
