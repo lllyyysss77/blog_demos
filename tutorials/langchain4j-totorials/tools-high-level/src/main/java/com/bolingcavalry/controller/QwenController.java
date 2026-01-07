@@ -65,7 +65,7 @@ public class QwenController {
         return null;
     }
 
-    @PostMapping("/tool/low/getwether")
+    @PostMapping("/tool/high/getwether")
     public ResponseEntity<Response> getWeather(@RequestBody PromptRequest request) {
         ResponseEntity<Response> checkRlt = check(request);
         if (checkRlt != null) {

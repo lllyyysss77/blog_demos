@@ -301,10 +301,19 @@ Accept: application/json
 
 
 ###  用提示词实现json格式的输出
-POST http://localhost:8080/api/qwen/tool/getwether
+POST http://localhost:8080/api/qwen/tool/low/getwether
 Content-Type: application/json
 Accept: application/json
 
 {
   "prompt": "查一下广东深圳的天气"
+}
+
+###  用提示词实现json格式的输出
+POST http://localhost:8080/api/qwen/tool/high/getwether
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "查一下西安的天气，内容精简一些，不要markdown格式"
 }

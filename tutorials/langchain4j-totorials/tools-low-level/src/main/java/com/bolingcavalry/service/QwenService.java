@@ -133,6 +133,6 @@ public class QwenService {
             }
         }
 
-        return resp.aiMessage().text() + "[from getWeather]";
+        return resp.aiMessage().text() + "[from low level getWeather]";
     }
 }
