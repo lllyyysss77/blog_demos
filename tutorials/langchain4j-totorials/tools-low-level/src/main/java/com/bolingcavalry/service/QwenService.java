@@ -44,11 +44,11 @@ public class QwenService {
             if ("getWeather".equals(request.name())) {
                 String arguments = request.arguments();
                 logger.info("执行工具调用：getWeather，参数：{}", arguments);
-                
+
                 // 简单解析 JSON 参数
                 String province = null;
                 String city = null;
-                
+
                 // 检查参数格式
                 if (arguments.contains("arg0") && arguments.contains("arg1")) {
                     // 格式：{"arg0": "广东", "arg1": "深圳"}
@@ -59,13 +59,13 @@ public class QwenService {
                     province = extractValue(arguments, "province");
                     city = extractValue(arguments, "city");
                 }
-                
+
                 logger.info("解析后的参数：province={}, city={}", province, city);
-                
+
                 if (province == null || city == null) {
                     throw new IllegalArgumentException("无法解析参数：" + arguments);
                 }
-                
+
                 WeatherInfo weatherInfo = weatherTools.getWeather(province, city);
                 return weatherInfo.toString();
             } else {
@@ -76,21 +76,22 @@ public class QwenService {
             return "Tool execution failed: " + e.getMessage();
         }
     }
-    
+
     /**
      * 从 JSON 字符串中提取值
      */
     private String extractValue(String json, String key) {
         int start = json.indexOf('"' + key + '"');
-        if (start == -1) return null;
-        
+        if (start == -1)
+            return null;
+
         int colon = json.indexOf(':', start);
         int valueStart = json.indexOf('"', colon);
         int valueEnd = json.indexOf('"', valueStart + 1);
-        
+
         return valueStart != -1 && valueEnd != -1 ? json.substring(valueStart + 1, valueEnd) : null;
     }
-    
+
     /**
      * 通过提示词range大模型返回JSON格式的内容
      * 
@@ -106,28 +107,28 @@ public class QwenService {
                 .build();
 
         ChatResponse resp = openAiChatModel.chat(req);
-        
+
         logger.info("初始响应：" + resp);
 
         // 检查是否需要执行工具调用
         if (resp.aiMessage().toolExecutionRequests() != null && !resp.aiMessage().toolExecutionRequests().isEmpty()) {
             logger.info("需要执行工具调用");
-            
+
             // 执行所有工具调用
             for (ToolExecutionRequest toolRequest : resp.aiMessage().toolExecutionRequests()) {
                 String toolResult = executeTool(toolRequest);
 
                 logger.info("工具执行结果：" + toolResult);
-                
+
                 // 将工具执行结果发送回模型
-                    ChatRequest toolResultRequest = ChatRequest.builder()
-                            .messages(
-                                    resp.aiMessage(),
-                                    ToolExecutionResultMessage.from(toolRequest, "工具执行结果：" + toolResult)
-                            )
-                            .toolSpecifications(toolSpecifications)
-                            .build();
-                
+                ChatRequest toolResultRequest = ChatRequest.builder()
+                        .messages(
+                                UserMessage.from(prompt),
+                                resp.aiMessage(),
+                                ToolExecutionResultMessage.from(toolRequest, "工具执行结果：" + toolResult))
+                        .toolSpecifications(toolSpecifications)
+                        .build();
+
                 resp = openAiChatModel.chat(toolResultRequest);
                 logger.info("工具执行后的响应：" + resp);
             }
