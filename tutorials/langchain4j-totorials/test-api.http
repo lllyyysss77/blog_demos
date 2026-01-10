@@ -315,5 +315,5 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "prompt": "查一下西安的天气，内容精简一些，不要markdown格式"
+  "prompt": "深圳气温，简单回答"
 }

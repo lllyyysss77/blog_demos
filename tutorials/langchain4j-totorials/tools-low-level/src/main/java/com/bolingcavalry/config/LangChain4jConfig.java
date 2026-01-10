@@ -27,7 +27,7 @@ import dev.langchain4j.model.openai.OpenAiChatModel;
 @Configuration
 public class LangChain4jConfig {
 
-    private static final Logger logger = LoggerFactory.getLogger(QwenService.class);
+    private static final Logger logger = LoggerFactory.getLogger(LangChain4jConfig.class);
 
     @Value("${langchain4j.open-ai.chat-model.api-key}")
     private String apiKey;

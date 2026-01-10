@@ -2,6 +2,8 @@ package com.bolingcavalry.config;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,7 @@ import dev.langchain4j.service.AiServices;
  */
 @Configuration
 public class LangChain4jConfig {
+    private static final Logger logger = LoggerFactory.getLogger(LangChain4jConfig.class);
 
     @Value("${langchain4j.open-ai.chat-model.api-key}")
     private String apiKey;
@@ -42,12 +45,13 @@ public class LangChain4jConfig {
      */
     @Bean
     public OpenAiChatModel chatModel() {
-        ChatModelListener logger = new ChatModelListener() {
+        ChatModelListener listener = new ChatModelListener() {
             @Override
             public void onRequest(ChatModelRequestContext reqCtx) {
                 // 1. 拿到 List<ChatMessage>
                 List<ChatMessage> messages = reqCtx.chatRequest().messages();
-                System.out.println("→ 请求: " + messages);
+                logger.info("发到LLM的请求: {}", messages);
+                
             }
 
             @Override
@@ -60,13 +64,12 @@ public class LangChain4jConfig {
                 // 4. 工具调用
                 List<ToolExecutionRequest> tools = aiMessage.toolExecutionRequests();
                 for (ToolExecutionRequest t : tools) {
-                    System.out.println("← tool      : " + t.name());
-                    System.out.println("← arguments : " + t.arguments()); // 原始 JSON
+                    logger.info("LLM响应, 执行函数[{}], 函数入参 : {}", t.name(), t.arguments());
                 }
 
                 // 5. 纯文本
                 if (aiMessage.text() != null) {
-                    System.out.println("← text      : " + aiMessage.text());
+                    logger.info("LLM响应, 纯文本 : {}", aiMessage.text());
                 }
             }
 
@@ -80,7 +83,7 @@ public class LangChain4jConfig {
                 .apiKey(apiKey)
                 .modelName(modelName)
                 .baseUrl(baseUrl)
-                .listeners(List.of(logger))
+                .listeners(List.of(listener))
                 .build();
     }
 
