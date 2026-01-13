@@ -75,5 +75,6 @@
     <module>output-by-json-mode</module>
     <module>tools-low-level</module>
     <module>tools-high-level</module>
+    <module>rag-easy</module>
   </modules>
 </project>
