@@ -62,8 +62,8 @@ public class QwenController {
         return null;
     }
 
-    @PostMapping("/output/byrageasy")
-    public ResponseEntity<Response> byPrompt(@RequestBody PromptRequest request) {
+    @PostMapping("/rag/easy")
+    public ResponseEntity<Response> byRagEasy(@RequestBody PromptRequest request) {
         ResponseEntity<Response> checkRlt = check(request);
         if (checkRlt != null) {
             return checkRlt;

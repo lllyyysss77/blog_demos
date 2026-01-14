@@ -16,5 +16,10 @@ cd /workspaces/blog_demos/tutorials/langchain4j-totorials/hello-world && DASHSCO
 cd ~/github/blog_demos/tutorials/langchain4j-totorials/demo-with-spring-boot && mvn spring-boot:run
 cd ~/source/blog_demos/tutorials/langchain4j-totorials/demo-with-spring-boot && mvn spring-boot:run
 ```
+### window 环境下的注意事项
+- 在powershell下要执行以下命令才能确保日志输出没有乱码
+```bash
+[Console]::OutputEncoding = [System.Text.UTF8Encoding]::new()
+```
 
 

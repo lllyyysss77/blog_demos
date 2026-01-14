@@ -317,3 +317,12 @@ Accept: application/json
 {
   "prompt": "深圳气温，简单回答"
 }
+
+###  用提示词实现json格式的输出
+POST http://localhost:8080/api/qwen/rag/easy
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "一百字介绍完颜陈和尚"
+}
