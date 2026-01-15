@@ -76,5 +76,6 @@
     <module>tools-low-level</module>
     <module>tools-high-level</module>
     <module>rag-easy</module>
+    <module>rag-naive</module>
   </modules>
 </project>
