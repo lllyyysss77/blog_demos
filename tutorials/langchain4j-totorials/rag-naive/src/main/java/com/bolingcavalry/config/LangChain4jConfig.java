@@ -29,7 +29,7 @@ import dev.langchain4j.model.chat.listener.ChatModelRequestContext;
 import dev.langchain4j.model.chat.listener.ChatModelResponseContext;
 import dev.langchain4j.model.chat.response.ChatResponse;
 import dev.langchain4j.model.embedding.EmbeddingModel;
-import dev.langchain4j.model.embedding.onnx.bgesmallenv15q.BgeSmallEnV15QuantizedEmbeddingModel;
+import dev.langchain4j.model.embedding.onnx.bgesmallzhv15q.BgeSmallZhV15QuantizedEmbeddingModel;
 import dev.langchain4j.model.openai.OpenAiChatModel;
 import dev.langchain4j.rag.content.retriever.ContentRetriever;
 import dev.langchain4j.rag.content.retriever.EmbeddingStoreContentRetriever;
@@ -133,8 +133,8 @@ public class LangChain4jConfig {
         
         start = System.currentTimeMillis();    
         logger.info("开始将文档分块转为向量"); 
-        // 每个分块创建嵌入向量
-        EmbeddingModel embeddingModel = new BgeSmallEnV15QuantizedEmbeddingModel();
+        // 每个分块创建嵌入向量，模型是智源 bge-small-zh-v1.5 量化版，中文 C-MTEB 第一梯队
+        EmbeddingModel embeddingModel = new BgeSmallZhV15QuantizedEmbeddingModel();
         List<Embedding> embeddings = embeddingModel.embedAll(segments).content();
         EmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
         embeddingStore.addAll(embeddings, segments);

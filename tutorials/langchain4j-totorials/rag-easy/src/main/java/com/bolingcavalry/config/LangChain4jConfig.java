@@ -103,6 +103,7 @@ public class LangChain4jConfig {
     }
 
     private static ContentRetriever createContentRetriever(String ragFilePath) {
+        // 向量数据存储的服务类，这里用的是内存存储，实际场景中可以用数据库或其他存储
         InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
 
         long start = System.currentTimeMillis();
@@ -129,6 +130,7 @@ public class LangChain4jConfig {
             }
 
             ingestor.ingest(doc);
+            logger.info("文档索引完成: {}", doc);
         }
 
         long end = System.currentTimeMillis();

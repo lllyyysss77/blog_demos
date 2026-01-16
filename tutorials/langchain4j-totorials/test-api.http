@@ -324,7 +324,7 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "prompt": "一百字介绍完颜陈和尚"
+  "prompt": "一百字介绍完顏陳和尚"
 }
 
 ###  用提示词实现json格式的输出
@@ -333,5 +333,5 @@ Content-Type: application/json
 Accept: application/json
 
 {
-  "prompt": "一百字介绍完颜陈和尚"
+  "prompt": "一百字介绍完顏陳和尚"
 }

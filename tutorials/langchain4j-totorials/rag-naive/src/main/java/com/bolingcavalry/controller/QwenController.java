@@ -63,14 +63,14 @@ public class QwenController {
     }
 
     @PostMapping("/rag/naive")
-    public ResponseEntity<Response> byRagEasy(@RequestBody PromptRequest request) {
+    public ResponseEntity<Response> byRagNaive(@RequestBody PromptRequest request) {
         ResponseEntity<Response> checkRlt = check(request);
         if (checkRlt != null) {
             return checkRlt;
         }
 
         try {
-            String response = qwenService.byRagEasy(request.getPrompt());
+            String response = qwenService.byRagNaive(request.getPrompt());
             return ResponseEntity.ok(new Response(response));
         } catch (Exception e) {
             // 捕获异常并返回错误信息

@@ -15,6 +15,7 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <dashscope.version>1.8.0-beta15</dashscope.version>
     <mapdb.version>3.0.9</mapdb.version>
+    <bge-small-zh-v15-q.version>1.0.0-beta5</bge-small-zh-v15-q.version>
   </properties>
   
   <dependencyManagement>
@@ -58,7 +59,15 @@
                 </exclusion>
             </exclusions>
       </dependency>
+
+      <dependency>
+        <groupId>dev.langchain4j</groupId>
+        <artifactId>langchain4j-embeddings-bge-small-zh-v15-q</artifactId>
+        <version>${bge-small-zh-v15-q.version}</version>
+      </dependency>
     </dependencies>
+
+
   </dependencyManagement>
 
   <!-- 子模块列表 -->

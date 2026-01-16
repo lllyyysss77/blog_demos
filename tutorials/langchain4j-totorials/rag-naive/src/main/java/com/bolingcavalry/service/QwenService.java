@@ -22,8 +22,8 @@ public class QwenService {
      * @param prompt
      * @return
      */
-    public String byRagEasy(String prompt) {
-        String answer = assistant.byRagEasy(prompt);
+    public String byRagNaive(String prompt) {
+        String answer = assistant.byRagNaive(prompt);
         logger.info("响应：" + answer);
         return answer + "[from byRagNaive]";
     }

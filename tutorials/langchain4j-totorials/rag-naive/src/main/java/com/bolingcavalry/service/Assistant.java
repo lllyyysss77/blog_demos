@@ -7,5 +7,5 @@ public interface Assistant {
      * @param userMessage 用户消息
      * @return 助手生成的回答
      */
-    String byRagEasy(String userMessage);
+    String byRagNaive(String userMessage);
 }
