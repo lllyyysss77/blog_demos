@@ -16,6 +16,7 @@
     <dashscope.version>1.8.0-beta15</dashscope.version>
     <mapdb.version>3.0.9</mapdb.version>
     <bge-small-zh-v15-q.version>1.0.0-beta5</bge-small-zh-v15-q.version>
+    <langchain4j.clickhouse.version>1.0.0-beta4</langchain4j.clickhouse.version>
   </properties>
   
   <dependencyManagement>
@@ -65,6 +66,13 @@
         <artifactId>langchain4j-embeddings-bge-small-zh-v15-q</artifactId>
         <version>${bge-small-zh-v15-q.version}</version>
       </dependency>
+
+      <!-- langchain4j-community-clickhouse不在BOM中，需要显式声明版本 -->
+      <dependency>
+          <groupId>dev.langchain4j</groupId>
+          <artifactId>langchain4j-community-clickhouse</artifactId>
+          <version>${langchain4j.clickhouse.version}</version>
+      </dependency>
     </dependencies>
 
 
@@ -86,5 +94,6 @@
     <module>tools-high-level</module>
     <module>rag-easy</module>
     <module>rag-naive</module>
+    <module>rag-clickhouse-index</module>
   </modules>
 </project>
