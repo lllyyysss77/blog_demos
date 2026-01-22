@@ -95,5 +95,6 @@
     <module>rag-easy</module>
     <module>rag-naive</module>
     <module>rag-clickhouse-index</module>
+    <module>rag-clickhouse-query</module>
   </modules>
 </project>

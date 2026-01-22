@@ -336,9 +336,18 @@ Accept: application/json
   "prompt": "一百字介绍完顏陳和尚"
 }
 
-###  用提示词实现json格式的输出
+###  开始索引，数据保存在clickhouse中
 POST http://localhost:8080/api/qwen/rag/startindex
 Content-Type: application/json
 Accept: application/json
 
 {}
+
+###  用提示词实现json格式的输出
+POST http://localhost:8080/api/qwen/rag/clickhouse
+Content-Type: application/json
+Accept: application/json
+
+{
+  "prompt": "一百字介绍完顏陳和尚"
+}
