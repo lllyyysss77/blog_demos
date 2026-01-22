@@ -85,10 +85,49 @@ public class QwenService {
         List<TextSegment> segments = new ArrayList<>();
 
         // 每个文档分块
-        for (Document document : documents) {
-            // 文档分块, 每个分块300个字符, 重叠0个字符
-            DocumentSplitter splitter = DocumentSplitters.recursive(300, 0);
-            segments.addAll(splitter.split(document));
+        for (int i = 0; i < documents.size(); i++) {
+            Document document = documents.get(i);
+            try {
+                logger.info("处理第{}个文档", i + 1);
+                // 文档分块, 每个分块300个字符, 重叠0个字符
+                try {
+                    // 尝试使用递归分割器
+                    DocumentSplitter splitter = DocumentSplitters.recursive(300, 0);
+                    segments.addAll(splitter.split(document));
+                    logger.info("第{}个文档加载完成", i + 1);
+                } catch (RuntimeException e) {
+                    logger.error("处理第{}个文档时出错: {}", i + 1, e.getMessage());
+                    // 如果递归分割器失败（比如遇到特殊字符），使用手动分割
+                    if (e.getMessage().contains("doesn't fit into the maximum segment size")) {
+                        logger.warn("递归分割器失败，使用手动分割: {}", e.getMessage());
+                        // 手动分割文档
+                        String text = document.text();
+                        int maxSegmentSize = 300;
+                        for (int j = 0; j < text.length(); j += maxSegmentSize) {
+                            int end = Math.min(j + maxSegmentSize, text.length());
+                            String segmentText = text.substring(j, end);
+                            // 检查segmentText是否为空或空白
+                            if (segmentText != null && !segmentText.trim().isEmpty()) {
+                                TextSegment segment = TextSegment.from(segmentText, document.metadata());
+                                segments.add(segment);
+                            }
+                        }
+                    } else {
+                        // 其他错误，直接抛出
+                        throw e;
+                    }
+                }
+            } catch (Exception e) {
+                logger.error("处理文档时出错: {}", e.getMessage());
+                logger.error("文档内容长度: {}", document.text().length());
+                // 如果文档内容很长，只打印前100个字符
+                if (document.text().length() > 100) {
+                    logger.error("文档前100个字符: {}", document.text().substring(0, 100));
+                } else {
+                    logger.error("文档内容: {}", document.text());
+                }
+                throw e;
+            }
         }
         logger.info("文档分块完成，共{}个分块，耗时: {}毫秒", segments.size(), (System.currentTimeMillis() - start));
 

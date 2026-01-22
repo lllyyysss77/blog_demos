@@ -127,7 +127,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <jvmArguments>-Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8</jvmArguments>
+                    <jvmArguments>-Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8 -Xms2g -Xmx4g</jvmArguments>
                 </configuration>
             </plugin>
             
